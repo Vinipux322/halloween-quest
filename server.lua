@@ -330,13 +330,10 @@ for k,v in pairs(cfg.coords) do
 end
 
 -- Initialize players stats
-local path = 'resources/'..GetCurrentResourceName()..'/stats.json'
+local stats_data = LoadResourceFile(GetCurrentResourceName(), 'stats.json')
 local stats = {}
-local stats_file = io.open(path, 'a+')
-local text = stats_file:read('*a')
-stats_file:close()
-if string.len(text) > 0 then
-	stats = json.decode(text)
+if stats_data then
+  stats = json.decode(stats_data)
 end
 
 -- Parse and get license
@@ -374,9 +371,7 @@ AddEventHandler('halloween-quest:takePuckup', function(pickupId)
     TriggerClientEvent('halloween-quest:notify', source, cfg.texts[cfg.locale].collected..' ('..stats[license].count..'/'..#cfg.coords..')')
   end
 
-  local file = io.open(path, 'w')
-	file:write(json.encode(stats))
-	file:close()
+  SaveResourceFile(GetCurrentResourceName(), 'stats.json', json.encode(stats), -1)
 end)
 
 -- Player request own data
