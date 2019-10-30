@@ -369,7 +369,7 @@ AddEventHandler('halloween-quest:takePuckup', function(pickupId)
 
   if stats[license].count == #cfg.coords-98 then
     TriggerClientEvent('halloween-quest:notify', source, cfg.texts[cfg.locale].collected_all)
-    TriggerEvent('halloween-quest:player_collected_all_figures', source)
+    TriggerEvent('halloween-quest:collectedAllFigures', source)
   else
     TriggerClientEvent('halloween-quest:notify', source, cfg.texts[cfg.locale].collected..' ('..stats[license].count..'/'..#cfg.coords..')')
   end
@@ -396,6 +396,6 @@ AddEventHandler('halloween-quest:requestData', function()
 end)
 
 -- Example reward event
-AddEventHandler('halloween-quest:player_collected_all_figures', function(playerSource)
+AddEventHandler('halloween-quest:collectedAllFigures', function(playerSource)
   print('Player collect all figures: '..playerSource)
 end)
