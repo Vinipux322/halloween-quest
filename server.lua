@@ -336,6 +336,16 @@ if stats_data then
   stats = json.decode(stats_data)
 end
 
+-- Parse stats, because i was told that it is sometimes duped
+for k,v in pairs(stats) do
+  local count = 0
+  for i,d in pairs(v.pickups) do
+    count = count + 1
+  end
+
+  v.count = count
+end
+
 -- Parse and get license
 local function GetPlayerLicense(ids)
   for _,v in pairs(ids) do
