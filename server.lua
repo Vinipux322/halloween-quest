@@ -118,7 +118,7 @@ cfg.coords = {
   {-2169.277, 5192.986, 16.295},
   {177.674, 6394.054, 31.376},
   {2416.942, 4994.557, 45.239},
-  {1702.9, 3291, 48.72},
+  {1702.9, 3291.0, 48.72},
   {-600.813, 2088.011, 132.336},
   {-3019.793, 41.9486, 10.2924},
   {-485.4648, -54.441, 38.9945},
@@ -323,6 +323,8 @@ cfg.texts = {
   }
 }
 
+cfg.advanceCount = true -- Advance count, because i was told that it is sometimes duped
+
 -- Sorry but i'm lazy
 local pickups = {}
 for k,v in pairs(cfg.coords) do
@@ -336,14 +338,24 @@ if stats_data then
   stats = json.decode(stats_data)
 end
 
--- Parse stats, because i was told that it is sometimes duped
-for k,v in pairs(stats) do
-  local count = 0
-  for i,d in pairs(v.pickups) do
-    count = count + 1
-  end
+-- Parse stats
+if cfg.advanceCount then
+  for k,v in pairs(stats) do
+    local count = 0
+    for i,d in pairs(v.pickups) do
+      count = count + 1
+    end
 
-  v.count = count
+    v.count = count
+
+    if v.count == 99 then
+      for i=1,100 do
+        if not v.pickups[tostring(i)] then
+          print(tostring(i))
+        end
+      end
+    end
+  end
 end
 
 -- Parse and get license
@@ -372,7 +384,17 @@ AddEventHandler('halloween-quest:takePuckup', function(pickupId)
   end
 
   stats[license].pickups[pickupId] = true
-  stats[license].count = stats[license].count + 1
+
+  if cfg.advanceCount then
+    local count = 0
+    for i,d in pairs(stats[license].pickups) do
+      count = count + 1
+    end
+
+    stats[license].count = count
+  else
+    stats[license].count = stats[license].count + 1
+  end
 
   if stats[license].count == #cfg.coords then
     TriggerClientEvent('halloween-quest:notify', source, cfg.texts[cfg.locale].collected_all)
